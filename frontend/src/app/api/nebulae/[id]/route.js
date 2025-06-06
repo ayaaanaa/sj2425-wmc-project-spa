@@ -13,28 +13,28 @@ async function openDb() {
   return db;
 }
 
-export async function GET(req, { params }) {
-  const { id } = params;
+export async function GET(req, context) {
+  const { id } = context.params;
   try {
     const db = await openDb();
-    const planet = await db.get("SELECT * FROM planets WHERE id = ?", id);
-    if (!planet) {
+    const nebula = await db.get("SELECT * FROM nebulae WHERE id = ?", id);
+    if (!nebula) {
       return new Response("Not found", { status: 404 });
     }
-    return new Response(JSON.stringify(planet), { status: 200 });
+    return new Response(JSON.stringify(nebula), { status: 200 });
   } catch (e) {
     return new Response("Server error", { status: 500 });
   }
 }
 
-export async function PUT(req, { params }) {
-  const { id } = params;
+export async function PUT(req, context) {
+  const { id } = context.params;
   const data = await req.json();
   try {
     const db = await openDb();
     await db.run(
-      `UPDATE planets SET name=?, type=?, diameter=?, mass=?, has_life=?, solar_system_id=?, picture=? WHERE id=?`,
-      data.name, data.type, data.diameter, data.mass, data.has_life, data.solar_system_id, data.picture, id
+      `UPDATE nebulae SET name=?, type=?, distance_from_earth=?, size=?, picture=? WHERE id=?`,
+      data.name, data.type, data.distance_from_earth, data.size, data.picture, id
     );
     return new Response("Updated", { status: 200 });
   } catch (e) {
@@ -42,11 +42,11 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
-  const { id } = params;
+export async function DELETE(req, context) {
+  const { id } = context.params;
   try {
     const db = await openDb();
-    await db.run("DELETE FROM planets WHERE id = ?", id);
+    await db.run("DELETE FROM nebulae WHERE id = ?", id);
     return new Response("Deleted", { status: 200 });
   } catch (e) {
     return new Response("Server error", { status: 500 });

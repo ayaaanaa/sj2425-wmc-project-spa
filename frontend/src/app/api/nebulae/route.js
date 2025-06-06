@@ -35,8 +35,8 @@ export async function POST(req) {
   try {
     const db = await openDb();
     const result = await db.run(
-      `INSERT INTO planets (name, type, diameter, mass, has_life, solar_system_id, picture) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      data.name, data.type, data.diameter, data.mass, data.has_life, data.solar_system_id, data.picture
+      `INSERT INTO nebulae (name, type, distance_from_earth, size, picture) VALUES (?, ?, ?, ?, ?)`,
+      data.name, data.type, data.distance_from_earth, data.size, data.picture
     );
     return new Response(JSON.stringify({ id: result.lastID }), { status: 201 });
   } catch (e) {

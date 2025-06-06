@@ -13,17 +13,20 @@ async function openDb() {
   return db;
 }
 
-export async function GET(req, { params }) {
-  const { id } = params;
+export async function GET(req) {
   try {
     const db = await openDb();
-    const system = await db.get("SELECT * FROM solar_systems WHERE id = ?", id);
-    if (!system) {
-      return new Response("Not found", { status: 404 });
-    }
-    return new Response(JSON.stringify(system), { status: 200 });
-  } catch (e) {
-    return new Response("Server error", { status: 500 });
+    const systems = await db.all("SELECT * FROM solar_systems");
+    return new Response(
+      JSON.stringify(systems),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Error fetching solar systems:", error);
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
 
@@ -36,7 +39,11 @@ export async function POST(req) {
       data.name, data.age, data.star_type, data.distance_from_earth, data.picture
     );
     return new Response(JSON.stringify({ id: result.lastID }), { status: 201 });
-  } catch (e) {
-    return new Response("Server error", { status: 500 });
+  } catch (error) {
+    console.error("Error adding solar system:", error);
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
