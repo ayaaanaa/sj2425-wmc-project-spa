@@ -13,6 +13,7 @@ export default function EditPage() {
   const [editType, setEditType] = useState<"planet" | "nebula" | "solar" | null>(null);
   const [editItem, setEditItem] = useState<any>(null);
 
+  
   useEffect(() => {
     async function fetchAll() {
       setLoading(true);
